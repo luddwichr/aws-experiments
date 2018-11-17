@@ -1,0 +1,40 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE")
+        classpath("com.github.jengelman.gradle.plugins:shadow:4.0.2")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.example'
+version = '0.0.1'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.amazonaws:aws-java-sdk-bom:1.11.451"
+    }
+}
+
+dependencies {
+    implementation "com.amazonaws:aws-lambda-java-core:1.2.0"
+    implementation "com.amazonaws:aws-lambda-java-events:2.2.4"
+    implementation "com.amazonaws:aws-java-sdk-lambda"
+    implementation "com.amazonaws:aws-java-sdk-s3"
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.assertj:assertj-core:3.11.1"
+    testImplementation "org.mockito:mockito-core:2.23.0"
+    testImplementation "cloud.localstack:localstack-utils:0.1.15"
+}

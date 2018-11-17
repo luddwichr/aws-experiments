@@ -1,0 +1,60 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  BucketName:
+    Type: String
+    Default: SrcBucket
+Resources:
+  DemoLambda:
+    Type: AWS::Lambda::Function
+    Properties:
+      Handler: 'com.example.awsexperiments.DemoLambda.handleRequest'
+      Runtime: "java8"
+      Timeout: 60
+      MemorySize: 256
+      Role: !GetAtt LambdaExecutionRole.Arn
+      Code: 'aws-experiments.jar'
+
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+        - Effect: Allow
+          Principal:
+            Service: lambda.amazonaws.com
+          Action: sts:AssumeRole
+      Path: '/'
+      Policies:
+        - PolicyName: S3Policy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: s3:GetObject
+                Resource: !Sub 'arn:aws:s3:::${BucketName}/*'
+
+  SrcBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${BucketName}'
+      AccessControl: private
+      NotificationConfiguration:
+        LambdaConfigurations:
+        - Function: !GetAtt DemoLambda.Arn
+          Event: s3:ObjectCreated:*
+          Filter:
+            S3Key:
+              Rules:
+                - Name: prefix
+                  Value: input-
+                - Name: suffix
+                  Value: .json
+
+  SrcBucketPolicy:
+    Type: AWS::Lambda::Permission
+    Properties:
+        Action: lambda:InvokeFunction
+        Principal: s3.amazonaws.com
+        SourceArn: !Ref SrcBucket
+        FunctionName: !GetAtt DemoLambda.Arn
