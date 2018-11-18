@@ -23,7 +23,7 @@
 6. Create a S3 bucket: `aws --endpoint-url=http://localhost:4572 s3 mb s3://testBucket --no-sign-request`
 
 
-- `gradlew shadowJar`
-- `aws lambda update-function-code --function-name MyLambdaFunction --zip-file file://???`
+- `gradlew distZip`
+- `aws lambda update-function-code --function-name DemoLambda --zip-file file://???`
 
 - `aws cloudformation validate-template --template-body file://???`
