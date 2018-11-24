@@ -7,6 +7,10 @@ import com.amazonaws.services.s3.event.S3EventNotification.S3EventNotificationRe
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -15,17 +19,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@RunWith(MockitoJUnitRunner.class)
 public class DemoLambdaTest {
 
-	private final Context context = new LoggingContext();
+	@InjectMocks
+	private DemoLambda demoLambda;
+
+	@Mock
+	private Context context;
+
+	@Mock
+	private AmazonS3 s3Client;
+
+	@Mock
+	private GetObjectRequestFactory getObjectRequestFactory;
+
+	@Mock
+	private S3ObjectMapper s3ObjectMapper;
 
 	@Test
 	public void handleRequest() throws IOException {
-		AmazonS3 s3Client = mock(AmazonS3.class);
-		GetObjectRequestFactory getObjectRequestFactory = mock(GetObjectRequestFactory.class);
-		S3ObjectMapper s3ObjectMapper = mock(S3ObjectMapper.class);
-		DemoLambda demoLambda = new DemoLambda(s3Client, getObjectRequestFactory, s3ObjectMapper);
-
 		S3EventNotificationRecord record = mock(S3EventNotificationRecord.class);
 		GetObjectRequest getObjectRequest = mock(GetObjectRequest.class);
 		when(getObjectRequestFactory.getObjectRequest(record)).thenReturn(getObjectRequest);

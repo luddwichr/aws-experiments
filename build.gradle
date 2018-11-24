@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath("io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE")
+        classpath('io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE')
     }
 }
 
@@ -16,7 +16,7 @@ apply plugin: 'io.spring.dependency-management'
 group = 'com.example'
 version = '0.0.1'
 sourceCompatibility = 1.8
-mainClassName = "com.example.awsexperiments.DemoLambda"
+mainClassName = 'com.example.awsexperiments.DemoLambda'
 
 repositories {
     mavenCentral()
@@ -24,17 +24,25 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom "com.amazonaws:aws-java-sdk-bom:1.11.451"
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.455'
     }
 }
 
+ext {
+    log4jVersion = '2.11.1'
+}
+
 dependencies {
-    implementation "com.amazonaws:aws-lambda-java-core:1.2.0"
-    implementation "com.amazonaws:aws-lambda-java-events:2.2.4"
-    implementation "com.amazonaws:aws-java-sdk-lambda"
-    implementation "com.amazonaws:aws-java-sdk-s3"
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.assertj:assertj-core:3.11.1"
-    testImplementation "org.mockito:mockito-core:2.23.0"
-    testImplementation "cloud.localstack:localstack-utils:0.1.15"
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.0'
+    implementation 'com.amazonaws:aws-lambda-java-events:2.2.4'
+    implementation 'com.amazonaws:aws-java-sdk-lambda'
+    implementation 'com.amazonaws:aws-java-sdk-s3'
+    implementation 'com.amazonaws:aws-lambda-java-log4j2:1.1.0'
+    annotationProcessor "org.apache.logging.log4j:log4j-core:$log4jVersion"
+    implementation "org.apache.logging.log4j:log4j-api:$log4jVersion"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:3.11.1'
+    testImplementation 'org.mockito:mockito-core:2.23.0'
+    testImplementation 'cloud.localstack:localstack-utils:0.1.15'
 }
