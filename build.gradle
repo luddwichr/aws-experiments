@@ -10,13 +10,11 @@ buildscript {
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'application'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.example'
 version = '0.0.1'
 sourceCompatibility = 1.8
-mainClassName = 'com.example.awsexperiments.DemoLambda'
 
 repositories {
     mavenCentral()
@@ -45,4 +43,13 @@ dependencies {
     testImplementation 'org.assertj:assertj-core:3.11.1'
     testImplementation 'org.mockito:mockito-core:2.23.0'
     testImplementation 'cloud.localstack:localstack-utils:0.1.15'
+}
+
+task buildZip(type: Zip) {
+    archiveName = 'demoLambda.zip'
+    from compileJava
+    from processResources
+    into('lib') {
+        from configurations.compileClasspath
+    }
 }
