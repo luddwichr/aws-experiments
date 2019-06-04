@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath('io.spring.gradle:dependency-management-plugin:1.0.6.RELEASE')
+        classpath('io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE')
     }
 }
 
@@ -22,17 +22,17 @@ repositories {
 
 dependencyManagement {
     imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.455'
+        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.564'
     }
 }
 
 ext {
-    log4jVersion = '2.11.1'
+    log4jVersion = '2.11.2'
 }
 
 dependencies {
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.0'
-    implementation 'com.amazonaws:aws-lambda-java-events:2.2.4'
+    implementation 'com.amazonaws:aws-lambda-java-events:2.2.6'
     implementation 'com.amazonaws:aws-java-sdk-lambda'
     implementation 'com.amazonaws:aws-java-sdk-s3'
     implementation 'com.amazonaws:aws-lambda-java-log4j2:1.1.0'
@@ -40,9 +40,9 @@ dependencies {
     implementation "org.apache.logging.log4j:log4j-api:$log4jVersion"
 
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.assertj:assertj-core:3.11.1'
-    testImplementation 'org.mockito:mockito-core:2.23.0'
-    testImplementation 'cloud.localstack:localstack-utils:0.1.15'
+    testImplementation 'org.assertj:assertj-core:3.12.2'
+    testImplementation 'org.mockito:mockito-core:2.28.2'
+    testImplementation 'cloud.localstack:localstack-utils:0.1.22'
 }
 
 task buildZip(type: Zip) {
