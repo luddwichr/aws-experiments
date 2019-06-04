@@ -24,7 +24,7 @@ public class DemoLambda implements RequestHandler<S3Event, Void> {
 		this( AmazonS3ClientBuilder.defaultClient(), new GetObjectRequestFactory(), new S3ObjectMapper());
 	}
 
-	/*for testing*/ DemoLambda(AmazonS3 s3Client, GetObjectRequestFactory getObjectRequestFactory, S3ObjectMapper s3ObjectMapper) {
+	private DemoLambda(AmazonS3 s3Client, GetObjectRequestFactory getObjectRequestFactory, S3ObjectMapper s3ObjectMapper) {
 		this.s3Client = s3Client;
 		this.getObjectRequestFactory = getObjectRequestFactory;
 		this.s3ObjectMapper = s3ObjectMapper;
@@ -32,17 +32,18 @@ public class DemoLambda implements RequestHandler<S3Event, Void> {
 
 	@Override
 	public Void handleRequest(S3Event s3Event, Context context) {
-		for (S3EventNotificationRecord record : s3Event.getRecords()) {
-			// TODO: too many responsibilities here, introduce additional abstraction layer to map record to S3Object?
-			S3Object object = s3Client.getObject(getObjectRequestFactory.getObjectRequest(record));
-			try {
-				SomeDto someDto  = s3ObjectMapper.map(object, SomeDto.class);
-				logger.info(someDto.toString());
-			} catch (IOException e) {
-				logger.error("failed to process input stream!" + e.getMessage());
-			}
-		}
+		s3Event.getRecords().forEach(this::handleRecord);
 		return null;
+	}
+
+	private void handleRecord(S3EventNotificationRecord record) {
+		S3Object object = s3Client.getObject(getObjectRequestFactory.getObjectRequest(record));
+		try {
+			SomeDto someDto  = s3ObjectMapper.map(object, SomeDto.class);
+			logger.info(someDto.toString());
+		} catch (IOException e) {
+			logger.error("failed to process input stream!" + e.getMessage());
+		}
 	}
 
 }

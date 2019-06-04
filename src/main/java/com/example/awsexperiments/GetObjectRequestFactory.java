@@ -1,5 +1,6 @@
 package com.example.awsexperiments;
 
+import com.amazonaws.services.s3.event.S3EventNotification.S3Entity;
 import com.amazonaws.services.s3.event.S3EventNotification.S3EventNotificationRecord;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3ObjectId;
@@ -12,9 +13,9 @@ public class GetObjectRequestFactory {
 	}
 
 	private S3ObjectId getS3ObjectId(S3EventNotificationRecord record) {
-		// TODO: Law of demeter is violated here -> introduce some additional class to extract S3ObjectId
-		String s3Key = record.getS3().getObject().getUrlDecodedKey();
-		String s3Bucket = record.getS3().getBucket().getName();
+		S3Entity s3 = record.getS3();
+		String s3Key = s3.getObject().getUrlDecodedKey();
+		String s3Bucket = s3.getBucket().getName();
 		return new S3ObjectId(s3Key, s3Bucket);
 	}
 }
