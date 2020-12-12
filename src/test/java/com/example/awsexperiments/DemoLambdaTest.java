@@ -2,15 +2,15 @@ package com.example.awsexperiments;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.events.S3Event;
+import com.amazonaws.services.lambda.runtime.events.models.s3.S3EventNotification.S3EventNotificationRecord;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.event.S3EventNotification.S3EventNotificationRecord;
 import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -19,8 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DemoLambdaTest {
+@ExtendWith(MockitoExtension.class)
+class DemoLambdaTest {
 
 	@InjectMocks
 	private DemoLambda demoLambda;
@@ -38,7 +38,7 @@ public class DemoLambdaTest {
 	private S3ObjectMapper s3ObjectMapper;
 
 	@Test
-	public void handleRequest() throws IOException {
+	void handleRequest() throws IOException {
 		S3EventNotificationRecord record = mock(S3EventNotificationRecord.class);
 		GetObjectRequest getObjectRequest = mock(GetObjectRequest.class);
 		when(getObjectRequestFactory.getObjectRequest(record)).thenReturn(getObjectRequest);

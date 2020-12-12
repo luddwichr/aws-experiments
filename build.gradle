@@ -4,7 +4,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath('io.spring.gradle:dependency-management-plugin:1.0.7.RELEASE')
+        classpath('io.spring.gradle:dependency-management-plugin:1.0.10.RELEASE')
     }
 }
 
@@ -20,33 +20,30 @@ repositories {
     mavenCentral()
 }
 
-dependencyManagement {
-    imports {
-        mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.564'
-    }
-}
-
-ext {
-    log4jVersion = '2.11.2'
-}
-
 dependencies {
-    implementation 'com.amazonaws:aws-lambda-java-core:1.2.0'
-    implementation 'com.amazonaws:aws-lambda-java-events:2.2.6'
+    implementation(platform('com.amazonaws:aws-java-sdk-bom:1.11.917'))
+    implementation 'com.amazonaws:aws-lambda-java-core:1.2.1'
+    implementation 'com.amazonaws:aws-lambda-java-events:3.6.0'
     implementation 'com.amazonaws:aws-java-sdk-lambda'
     implementation 'com.amazonaws:aws-java-sdk-s3'
-    implementation 'com.amazonaws:aws-lambda-java-log4j2:1.1.0'
-    annotationProcessor "org.apache.logging.log4j:log4j-core:$log4jVersion"
-    implementation "org.apache.logging.log4j:log4j-api:$log4jVersion"
+    implementation 'com.amazonaws:aws-lambda-java-log4j2:1.2.0'
+    annotationProcessor 'org.apache.logging.log4j:log4j-core:2.14.0'
+    implementation 'org.apache.logging.log4j:log4j-api:2.14.0'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.assertj:assertj-core:3.12.2'
-    testImplementation 'org.mockito:mockito-core:2.28.2'
-    testImplementation 'cloud.localstack:localstack-utils:0.1.22'
+    testImplementation(platform('org.junit:junit-bom:5.7.0'))
+    testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation 'org.assertj:assertj-core:3.18.1'
+    testImplementation 'org.mockito:mockito-core:3.6.28'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.28'
+    testImplementation 'cloud.localstack:localstack-utils:0.2.5'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 task buildZip(type: Zip) {
-    archiveName = 'demoLambda.zip'
+    archiveFileName = 'demoLambda.zip'
     from compileJava
     from processResources
     into('lib') {

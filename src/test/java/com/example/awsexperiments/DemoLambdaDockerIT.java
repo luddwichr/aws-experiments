@@ -1,21 +1,21 @@
 package com.example.awsexperiments;
 
-import cloud.localstack.DockerTestUtils;
-import cloud.localstack.docker.LocalstackDockerTestRunner;
+import cloud.localstack.awssdkv1.TestUtils;
+import cloud.localstack.docker.LocalstackDockerExtension;
 import cloud.localstack.docker.annotation.LocalstackDockerProperties;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
-@RunWith(LocalstackDockerTestRunner.class)
-@LocalstackDockerProperties(randomizePorts = true)
-public class DemoLambdaDockerIT {
+@ExtendWith(LocalstackDockerExtension.class)
+@LocalstackDockerProperties(randomizePorts = true, services = {"s3"})
+class DemoLambdaDockerIT {
 
 	@Test
-	public void handleRequest() {
-		AmazonS3 s3 = DockerTestUtils.getClientS3();
-		Bucket testBucket = s3.createBucket("testBucket");
+	void handleRequest() {
+		AmazonS3 s3 = TestUtils.getClientS3();
+		Bucket testBucket = s3.createBucket("test-bucket");
 	}
 
 }
