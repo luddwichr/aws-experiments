@@ -9,15 +9,12 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.S3ObjectId;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
 public class DemoLambda implements RequestHandler<S3Event, Void> {
 
-	private static final Logger logger = LogManager.getLogger(DemoLambda.class);
 	private final AmazonS3 s3Client;
 	private final ObjectMapper objectMapper;
 
@@ -26,7 +23,7 @@ public class DemoLambda implements RequestHandler<S3Event, Void> {
 		this(AmazonS3ClientBuilder.defaultClient(), new ObjectMapper());
 	}
 
-	private DemoLambda(AmazonS3 s3Client, ObjectMapper objectMapper) {
+	DemoLambda(AmazonS3 s3Client, ObjectMapper objectMapper) {
 		this.s3Client = s3Client;
 		this.objectMapper = objectMapper;
 	}
@@ -42,7 +39,8 @@ public class DemoLambda implements RequestHandler<S3Event, Void> {
 		String objectAsString = s3Client.getObjectAsString(objectId.getBucket(), objectId.getKey());
 		try {
 			SomeDto someDto = objectMapper.readValue(objectAsString, SomeDto.class);
-			logger.info(someDto.toString());
+			someDto.setValue(someDto.getValue().toLowerCase());
+			s3Client.putObject(objectId.getBucket(), objectId.getKey() + "-processed", objectMapper.writeValueAsString(someDto));
 		} catch (IOException e) {
 			throw new UncheckedIOException(e);
 		}
